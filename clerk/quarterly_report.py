@@ -1,16 +1,22 @@
 # -*- coding: utf-8 -*-
+"""Script for downloading the "potential" reports for use in compiling the ward
+quarterly report. The downloaded PDFs can be sent to the appropriate
+organization secretaries so that they can compare their records with the
+current headquarters records.
 
-from getpass import getpass
+Output is written to '~/Clerk', in a subdirectory named for the quarter.
+"""
+
 from datetime import date
 import os
 from dateutil.relativedelta import relativedelta
 import errno
-import requests
-import time
 
 from clerk import lds_session
 
-REPORT_URL = 'https://beta.lds.org/mls/mbr/report/quarterly-report/details/'
+REPORT_URL = 'https://beta.lds.org/mls/mbr/report/'\
+             'quarterly-report-details-print'
+
 REPORTS = [
     {
         'line': 14,
@@ -80,36 +86,49 @@ def get_report_dir(year, quarter):
 
 
 def fetch_reports(s, year, quarter, report_dir):
+    unit_number = lds_session.get_unit_number(s)
     for report in REPORTS:
-        fetch_report(s, report, year, quarter, report_dir)
+        fetch_report(s, unit_number, report, year, quarter, report_dir)
 
 
-def fetch_report(s, report, year, quarter, report_dir):
+def fetch_report(s, unit_number, report, year, quarter, report_dir):
     name = '{} - {} - Potential.pdf'.format(report['line'], report['name'])
     print(name)
-    url = REPORT_URL + str(report['line'])
-    params = get_report_params(year, quarter)
-    r = s.get(url, params=params, stream=True)
+    params = get_report_params(report['line'], unit_number, year, quarter)
+    r = s.get(REPORT_URL, params=params, stream=True)
+    # print(r.url)
     if r.ok:
         filename = os.path.join(report_dir, name)
+        first_chunk = True
         with open(filename, 'wb') as f:
             for chunk in r:
+                if first_chunk:
+                    if not chunk.startswith(b'%PDF'):
+                        print('  ** File isn\'t a PDF! **')
+                    first_chunk = False
                 f.write(chunk)
     else:
-        print(r.text)
+        print(r)
 
 
-def get_report_params(year, quarter):
+def get_report_params(line, unit_number, year, quarter):
     # The potential reports aren't available until after the quarter ends, so
     # we're asking for the most recently completed quarter.
+
+    # This stuff is subject to change. Try clicking the "Print" button on the
+    # report detail page to see what the current parameters should be.
     return {
-        'lang': 'eng',
         'pdf': 'true',
-        'sort': 'name',
-        'sortDir': '0',
+        'lang': 'eng',
+        'rowNumber': line,
+        'unitNumber': unit_number,
         'showAge': 'false',
-        'filter': 'POTENTIAL',
-        'date': time.time(),
         'year': year,
         'quarter': quarter,
+        'filter': 'POTENTIAL',
+        'sort': 'nameOrder',
     }
+
+
+if __name__ == '__main__':
+    download_potential_reports()

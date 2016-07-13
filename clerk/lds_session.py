@@ -1,8 +1,11 @@
 # -*- coding: utf-8 -*-
 import os
+import re
 from getpass import getpass
 
 import requests
+
+from clerk.home_teaching import UnitError
 
 LOGIN_URL = 'https://signin.lds.org/login.html'
 
@@ -33,7 +36,23 @@ def login():
         'password': password,
     }
     s = requests.Session()
+
+    # If a beta is in effect, you have to set this cookie to say that you've
+    # accepted the terms or you'll get redirected to an acceptance page.
+    s.cookies['clerk-resources-beta-terms'] = 'true'
+
     r = s.post(LOGIN_URL, data=data, allow_redirects=False)
     if r.ok:
         return s
     raise AuthError()
+
+
+def get_unit_number(s):
+    # Scrape the unit number from the main page.
+    r = s.get('https://www.lds.org/mls/mbr/?lang=eng')
+    if not r.ok:
+        raise UnitError(r.reason)
+    try:
+        return re.search(r"unitNumber\":(\d+)", r.text).group(1)
+    except (IndexError, AttributeError):
+        raise UnitError('Unit number not found')

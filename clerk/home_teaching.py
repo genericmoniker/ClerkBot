@@ -1,20 +1,21 @@
 # -*- coding: utf-8 -*-
-import os
+"""Script for downloading home teaching reports.
+"""
 
 import errno
-import re
+import os
 
 from clerk import lds_session
 
 OUTPUT_DIR = os.path.join(os.path.expanduser('~'), 'Clerk')
 HT_URL = (
-    'https://beta.lds.org/htvt/services/v1/{{}}/print?auxiliaryId={}&'
+    'https://www.lds.org/htvt/services/v1/{{}}/print?auxiliaryId={}&'
     'reportType=OVERVIEW&printPercent=true&overviewCategories='
     'STATS_BY_MONTH%2CNOT_VISITED%2CPOTENTIAL_HOUSEHOLDS_UNASSIGNED%2C'
     'POTENTIAL_TEACHERS_UNASSIGNED&lang=eng'
 )
 DEACONS_URL = (
-    'https://beta.lds.org/mls/mbr/orgs/534259/print?unitNumber={}&'
+    'https://www.lds.org/mls/mbr/orgs/534259/print?unitNumber={}&'
     'lang=eng&pdf=true'
 )
 
@@ -80,7 +81,7 @@ def get_report_dir():
 
 
 def fetch_reports(s, report_dir):
-    unit_number = get_unit_number(s)
+    unit_number = lds_session.get_unit_number(s)
     for report in REPORTS:
         fetch_report(s, unit_number, report, report_dir)
 
@@ -108,12 +109,5 @@ class UnitError(Exception):
     pass
 
 
-def get_unit_number(s):
-    # Scrape the unit number from the main page.
-    r = s.get('https://beta.lds.org/mls/mbr/?lang=eng')
-    if not r.ok:
-        raise UnitError(r.reason)
-    try:
-        return re.search(r"window.unitNumber\s*=\s*'(\d+)';", r.text).group(1)
-    except IndexError:
-        raise UnitError('Unit number not found')
+if __name__ == '__main__':
+    download_reports()
