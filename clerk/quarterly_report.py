@@ -14,7 +14,8 @@ import errno
 
 from clerk import lds_session
 
-REPORT_URL = 'https://beta.lds.org/mls/mbr/report/'\
+# If our stake is beta, change 'www' to 'beta':
+REPORT_URL = 'https://www.lds.org/mls/mbr/report/'\
              'quarterly-report-details-print'
 
 REPORTS = [

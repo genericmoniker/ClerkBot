@@ -40,14 +40,22 @@ REPORTS = [
             custom='',
             hidden='',
             yearsInCalling=0,
-            parentSubOrgIdsFilter='534274,534275,4328260,4328262',
+            parentSubOrgIdsFilter='534274,4328260',
             expandedResponsibilities='',
             groupByOrg=True,
+            membersShowGender=False,
             membersShowAge=True,
+            membersShowPhone=True,
+            membersShowEmail=True,
             membersShowAddress=False,
+            membersShowCurrentUnit=False,
+            membersMinAge='',
+            membersMaxAge='',
             includeMembers=True,
             includeCallings=False,
+            includeHtvt=False,
             filterPositionTypes='',
+            selectedMemberIndividualIds='',
             membersSort='birthdate',
             membersSortDir=0,
             membersFilterPriesthood='',
@@ -71,7 +79,7 @@ def download_reports():
 def get_report_dir():
     output_dir = os.path.join(os.path.expanduser('~'), 'Clerk')
     path = os.path.join(output_dir, 'Home Teaching')
-    print(path)
+    print('Output path: ', path)
     try:
         os.makedirs(path)
     except os.error as e:

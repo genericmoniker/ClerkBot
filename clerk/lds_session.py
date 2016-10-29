@@ -42,7 +42,8 @@ def login():
     s.cookies['clerk-resources-beta-terms'] = 'true'
 
     r = s.post(LOGIN_URL, data=data, allow_redirects=False)
-    if r.ok:
+    print('Login response: ', r)
+    if r.status_code == 200:
         return s
     raise AuthError()
 
