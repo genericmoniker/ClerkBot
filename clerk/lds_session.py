@@ -5,13 +5,15 @@ from getpass import getpass
 
 import requests
 
-from clerk.home_teaching import UnitError
-
 LOGIN_URL = 'https://signin.lds.org/login.html'
 
 
 class AuthError(Exception):
     """Exception raised on auth failure."""
+    pass
+
+
+class UnitError(Exception):
     pass
 
 
@@ -37,8 +39,9 @@ def login():
     }
     s = requests.Session()
 
-    # If a beta is in effect, you have to set this cookie to say that you've
+    # If a beta is in effect, you have to set these cookies to say that you've
     # accepted the terms or you'll get redirected to an acceptance page.
+    s.cookies['clerk-resources-beta-eula'] = '4.1'
     s.cookies['clerk-resources-beta-terms'] = 'true'
 
     r = s.post(LOGIN_URL, data=data, allow_redirects=False)

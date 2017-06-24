@@ -9,13 +9,13 @@ from clerk import lds_session
 
 OUTPUT_DIR = os.path.join(os.path.expanduser('~'), 'Clerk')
 HT_URL = (
-    'https://www.lds.org/htvt/services/v1/{{}}/print?auxiliaryId={}&'
+    'https://beta.lds.org/htvt/services/v1/{{}}/print?auxiliaryId={}&'
     'reportType=OVERVIEW&printPercent=true&overviewCategories='
     'STATS_BY_MONTH%2CNOT_VISITED%2CPOTENTIAL_HOUSEHOLDS_UNASSIGNED%2C'
     'POTENTIAL_TEACHERS_UNASSIGNED&lang=eng'
 )
 DEACONS_URL = (
-    'https://www.lds.org/mls/mbr/orgs/534259/print?unitNumber={}&'
+    'https://beta.lds.org/mls/mbr/orgs/534259/print?unitNumber={}&'
     'lang=eng&pdf=true'
 )
 
@@ -111,10 +111,6 @@ def fetch_report(s, unit_number, report, report_dir):
                 f.write(chunk)
     else:
         print(r.text)
-
-
-class UnitError(Exception):
-    pass
 
 
 if __name__ == '__main__':
