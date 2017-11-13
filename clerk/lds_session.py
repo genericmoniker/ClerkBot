@@ -5,7 +5,8 @@ from getpass import getpass
 
 import requests
 
-LOGIN_URL = 'https://signin.lds.org/login.html'
+
+_service_config = None
 
 
 class AuthError(Exception):
@@ -15,6 +16,18 @@ class AuthError(Exception):
 
 class UnitError(Exception):
     pass
+
+
+def service_config():
+    """Get the web service configuration.
+    :return: deserialized JSON service configuration.
+    """
+    global _service_config
+    if not _service_config:
+        r = requests.get('https://tech.lds.org/mobile/ldstools/config.json')
+        r.raise_for_status()
+        _service_config = r.json()
+    return _service_config
 
 
 def login():
@@ -44,7 +57,8 @@ def login():
     s.cookies['clerk-resources-beta-eula'] = '4.1'
     s.cookies['clerk-resources-beta-terms'] = 'true'
 
-    r = s.post(LOGIN_URL, data=data, allow_redirects=False)
+    url = service_config()['auth-url']
+    r = s.post(url, data=data, allow_redirects=False)
     print('Login response: ', r)
     if r.status_code == 200:
         return s
@@ -52,11 +66,7 @@ def login():
 
 
 def get_unit_number(s):
-    # Scrape the unit number from the main page.
-    r = s.get('https://www.lds.org/mls/mbr/?lang=eng')
-    if not r.ok:
-        raise UnitError(r.reason)
-    try:
-        return re.search(r"unitNumber\":(\d+)", r.text).group(1)
-    except (IndexError, AttributeError):
-        raise UnitError('Unit number not found')
+    url = service_config()['current-user-unit']
+    r = s.get(url)
+    r.raise_for_status()
+    return r.json()['message']
