@@ -2,12 +2,17 @@
 from setuptools import setup
 
 setup(
-    name='clerk',
+    name='Clerk Tools',
     version='0.1',
-    description='LDS clerk scripts',
+    description='Handy LDS clerk scripts',
     author='Eric Smith',
     author_email='eric@esmithy.net',
     license='MIT',
     packages=['clerk', 'tests'],
-    zip_safe=True
+    zip_safe=True,
+    entry_points={
+       'console_scripts': [
+           'clerk = clerk.__main__:main'
+       ]
+    },
 )
