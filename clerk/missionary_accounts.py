@@ -8,6 +8,39 @@ from clerk import lds_session, gmail
 from clerk.paths import CONF_DIR
 
 
+EMAIL_BODY = '''Dear Missionary Family,
+
+To make it easier for you to keep track of mission expenses, I'm sending you a 
+monthly summary. The ward mission category balance for your missionary is 
+currently:
+
+{}
+
+With regard to financing missionary service, the church handbook says:
+
+    The primary responsibility to provide financial support for a missionary 
+    lies with the individual and the family. Generally, missionaries should not 
+    rely entirely on people outside of their family for financial support.
+
+    Missionaries and their families should make appropriate sacrifices to 
+    provide financial support for a mission. It is better for a person to delay 
+    a mission for a time and earn money toward his or her support than to rely 
+    entirely on others. However, worthy missionary candidates should not be 
+    prevented from serving missions solely for financial reasons when they and 
+    their families have sacrificed according to their capability.
+
+If your missionary has completed his or her service and has a positive balance,
+we will sweep the remaining funds into the overall ward mission fund. For both
+policy and legal reasons, excess funds cannot be refunded to donors.    
+
+Please feel free to make an appointment with the bishop if you'd ever like to 
+discuss challenges financing your missionary.
+
+Regards,
+{} 
+'''
+
+
 class Account:
     def __init__(self, name, balance):
         self.name = name
@@ -68,9 +101,10 @@ def process_lines(report):
 
 def create_email(config, account):
     to = config['emails'].get(account.name)
+    clerk_name = config['emails'].get('clerk_name', 'Ward Clerk')
     summary = account.name + ' ' + account.balance_str
     if to:
-        text = summary  # TODO: Real email message
+        text = EMAIL_BODY.format(summary, clerk_name)
         message = gmail.create_message(
             'me',
             to,
