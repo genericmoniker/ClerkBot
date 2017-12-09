@@ -16,6 +16,11 @@ currently:
 
 {}
 
+The church withdraws $400 per month (on around the 6th of the month) for the 
+duration of your missionary's service, starting from the month they entered the 
+MTC, which will be subtracted from the above balance and any contributions made 
+to their account between now and then.  
+
 With regard to financing missionary service, the church handbook says:
 
     The primary responsibility to provide financial support for a missionary 
@@ -34,7 +39,7 @@ we will sweep the remaining funds into the overall ward mission fund. For both
 policy and legal reasons, excess funds cannot be refunded to donors.    
 
 Please feel free to make an appointment with the bishop if you'd ever like to 
-discuss challenges financing your missionary.
+discuss financing your missionary.
 
 Regards,
 {} 
