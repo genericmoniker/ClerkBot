@@ -19,7 +19,10 @@ APPLICATION_NAME = 'Clerk Tools'
 # at ~/.credentials/clerk-tools.json
 SCOPES = 'https://www.googleapis.com/auth/gmail.compose'
 
-flags = argparse.ArgumentParser(parents=[tools.argparser]).parse_args()
+# The documentation says to do this:
+# flags = argparse.ArgumentParser(parents=[tools.argparser]).parse_args()
+# But that interferes with my own command line parsing, so:
+flags = {}
 
 
 def create_message(sender, to, subject, message_text):
