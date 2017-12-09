@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 import os
-import re
 from getpass import getpass
 
 import requests
@@ -11,10 +10,6 @@ _service_config = None
 
 class AuthError(Exception):
     """Exception raised on auth failure."""
-    pass
-
-
-class UnitError(Exception):
     pass
 
 

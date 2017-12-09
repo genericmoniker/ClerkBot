@@ -1,6 +1,4 @@
-# -*- coding: utf-8 -*-
-"""Script for downloading home teaching reports.
-"""
+"""Script for downloading home teaching reports."""
 
 import errno
 import os
@@ -15,7 +13,7 @@ HT_URL = (
     'POTENTIAL_TEACHERS_UNASSIGNED&lang=eng'
 )
 DEACONS_URL = (
-    'https://beta.lds.org/mls/mbr/orgs/534259/print?unitNumber={}&'
+    'https://www.lds.org/mls/mbr/orgs/534259/print?unitNumber={}&'
     'lang=eng&pdf=true'
 )
 
@@ -72,8 +70,6 @@ def download_reports():
         fetch_reports(s, report_dir)
     except lds_session.AuthError:
         print('Login failed :(')
-    except UnitError as e:
-        print('Error finding unit number: ' + str(e))
 
 
 def get_report_dir():
