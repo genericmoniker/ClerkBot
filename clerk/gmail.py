@@ -29,7 +29,7 @@ def create_message(sender, to, subject, message_text):
     """Create a message for an email.
 
     :param sender: Email address of the sender.
-    :param to: Email address of the receiver.
+    :param to: Email address of the receiver (may be a comma-separated list).
     :param subject: The subject of the email message.
     :param message_text: The text of the email message.
     :return: An object containing a base64url encoded email object.
