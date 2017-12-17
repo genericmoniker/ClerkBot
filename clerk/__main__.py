@@ -1,10 +1,15 @@
 import argparse
 
-from clerk import home_teaching, quarterly_report, missionary_accounts
+from clerk import home_teaching, quarterly_report, missionary_accounts, \
+    mailing_labels
 
 
 def main():
     parser = argparse.ArgumentParser(description='Clerk Tools')
+    parser.add_argument('-l, --labels',
+                        dest='l',
+                        help='Generate mailing labels to households',
+                        action='store_true')
     parser.add_argument('-m, --missionary-accounts',
                         dest='ma',
                         help='Send missionary account balance emails',
@@ -18,6 +23,8 @@ def main():
                         help='Download the quarterly potential reports',
                         action='store_true')
     args = parser.parse_args()
+    if args.l:
+        mailing_labels.create_labels()
     if args.ma:
         missionary_accounts.create_report_emails()
     if args.ht:

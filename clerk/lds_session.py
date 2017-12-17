@@ -65,3 +65,11 @@ def get_unit_number(s):
     r = s.get(url)
     r.raise_for_status()
     return r.json()['message']
+
+
+def get_directory(s, unit_number):
+    unit_number = str(unit_number)
+    url = service_config()['unit-membership'].replace('%@', unit_number)
+    r = s.get(url)
+    r.raise_for_status()
+    return r.json()
