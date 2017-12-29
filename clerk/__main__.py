@@ -1,11 +1,15 @@
 import argparse
 
 from clerk import home_teaching, quarterly_report, missionary_accounts, \
-    mailing_labels
+    mailing_labels, directory
 
 
 def main():
     parser = argparse.ArgumentParser(description='Clerk Tools')
+    parser.add_argument('-d, --directory',
+                        dest='d',
+                        help='Generate concise directory of households',
+                        action='store_true')
     parser.add_argument('-l, --labels',
                         dest='l',
                         help='Generate mailing labels to households',
@@ -23,6 +27,8 @@ def main():
                         help='Download the quarterly potential reports',
                         action='store_true')
     args = parser.parse_args()
+    if args.d:
+        directory.create_directory()
     if args.l:
         mailing_labels.create_labels()
     if args.ma:
