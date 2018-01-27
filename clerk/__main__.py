@@ -1,5 +1,7 @@
 import argparse
 
+import sys
+
 from clerk import home_teaching, quarterly_report, missionary_accounts, \
     mailing_labels, directory
 
@@ -26,6 +28,12 @@ def main():
                         dest='qr',
                         help='Download the quarterly potential reports',
                         action='store_true')
+
+    # Help if no args were passed.
+    if len(sys.argv) == 1:
+        parser.print_help()
+        sys.exit(1)
+
     args = parser.parse_args()
     if args.d:
         directory.create_directory()

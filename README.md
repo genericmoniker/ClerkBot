@@ -18,6 +18,8 @@ Actions are invoked from the command line. Try:
 
     clerk -h
 
+Some actions have further explanation, below.
+
 ### Missionary Accounts
 
 This action creates emails for missionary accounts to let families of
