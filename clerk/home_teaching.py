@@ -63,9 +63,9 @@ REPORTS = [
 ]
 
 
-def download_reports():
+def download_reports(s=None):
     try:
-        s = lds_session.login()
+        s = s or lds_session.login()
         report_dir = get_report_dir()
         fetch_reports(s, report_dir)
     except lds_session.AuthError:

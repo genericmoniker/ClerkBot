@@ -67,12 +67,12 @@ def reorder_name(name: str):
     return parts[2] + ' ' + parts[0]
 
 
-def create_labels():
+def create_labels(s=None):
     """Create mailing labels (PDF) for each head of house + spouse (if any)."""
     # To debug label placement, setting border=True might help.
     sheet = labels.Sheet(create_label_spec(), draw_label, border=False)
 
-    s = lds_session.login()
+    s = s or lds_session.login()
     unit = lds_session.get_unit_number(s)
     directory = lds_session.get_directory(s, unit)
     for record in directory:

@@ -56,14 +56,14 @@ class Account:
         return f'${self.balance:,.2f}'
 
 
-def create_report_emails():
+def create_report_emails(s=None):
     # TODO: Nicer error handling here
     config = configparser.ConfigParser()
     with open(CONF_DIR / 'config.ini', 'r') as f:
         config.read_file(f)
 
     try:
-        s = lds_session.login()
+        s = s or lds_session.login()
         report = get_ward_mission_report(s)
         accounts = process_lines(report)
         for account in accounts:

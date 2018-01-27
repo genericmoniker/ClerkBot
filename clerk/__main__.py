@@ -3,7 +3,7 @@ import argparse
 import sys
 
 from clerk import home_teaching, quarterly_report, missionary_accounts, \
-    mailing_labels, directory
+    mailing_labels, directory, lds_session
 
 
 def main():
@@ -35,16 +35,23 @@ def main():
         sys.exit(1)
 
     args = parser.parse_args()
+
+    try:
+        s = lds_session.login()
+    except lds_session.AuthError:
+        print('Login failed :(')
+        sys.exit(2)
+
     if args.d:
-        directory.create_directory()
+        directory.create_directory(s)
     if args.l:
-        mailing_labels.create_labels()
+        mailing_labels.create_labels(s)
     if args.ma:
-        missionary_accounts.create_report_emails()
+        missionary_accounts.create_report_emails(s)
     if args.ht:
-        home_teaching.download_reports()
+        home_teaching.download_reports(s)
     if args.qr:
-        quarterly_report.download_potential_reports()
+        quarterly_report.download_potential_reports(s)
 
 
 if __name__ == '__main__':

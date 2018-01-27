@@ -21,8 +21,8 @@ def end_rtf(rtf_file):
     rtf_file.write('}')
 
 
-def create_directory():
-    s = lds_session.login()
+def create_directory(s=None):
+    s = s or lds_session.login()
     unit = lds_session.get_unit_number(s)
     directory = lds_session.get_directory(s, unit)
 

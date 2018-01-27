@@ -52,9 +52,9 @@ REPORTS = [
 ]
 
 
-def download_potential_reports():
+def download_potential_reports(s=None):
     try:
-        s = lds_session.login()
+        s = s or lds_session.login()
         year, quarter = last_quarter(date.today())
         report_dir = get_report_dir(year, quarter)
         fetch_reports(s, year, quarter, report_dir)
