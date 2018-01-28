@@ -3,11 +3,15 @@ import argparse
 import sys
 
 from clerk import home_teaching, quarterly_report, missionary_accounts, \
-    mailing_labels, directory, lds_session
+    mailing_labels, directory, lds_session, callings
 
 
 def main():
     parser = argparse.ArgumentParser(description='Clerk Tools')
+    parser.add_argument('-c, --callings',
+                        dest='d',
+                        help='Save a snapshot of current callings',
+                        action='store_true')
     parser.add_argument('-d, --directory',
                         dest='d',
                         help='Generate concise directory of households',
@@ -42,6 +46,8 @@ def main():
         print('Login failed :(')
         sys.exit(2)
 
+    if args.c:
+        callings.save_callings_snapshot(s)
     if args.d:
         directory.create_directory(s)
     if args.l:

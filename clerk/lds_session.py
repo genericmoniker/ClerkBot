@@ -73,3 +73,14 @@ def get_directory(s, unit_number):
     r = s.get(url)
     r.raise_for_status()
     return r.json()
+
+
+def get_callings(s, unit_number, raw=True):
+    unit = str(unit_number)
+    url = service_config()['unit-members-and-callings-v2'].replace('%@', unit)
+    r = s.get(url)
+    r.raise_for_status()
+    if raw:
+        return r.content
+    else:
+        return r.json()
