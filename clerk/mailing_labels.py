@@ -8,7 +8,7 @@ from clerk.paths import OUTPUT_DIR
 def create_label_spec():
     """Create a label specification with 3x10 labels per sheet.
 
-    For example, Avery 5260, 5160, 8160, 8460, etc.
+    Tested against Avery 8160 (Avery 5160 template).
     """
     # The labels library takes measurements in millimeters (1 inch = 25.4 mm).
     return labels.Specification(
@@ -18,7 +18,11 @@ def create_label_spec():
         columns=3,
         label_width=66.669,  # 2 5/8"
         label_height=25.4,   # 1"
-        corner_radius=1,
+        left_margin=4,
+        column_gap=4,
+        top_margin=12,
+        row_gap=0,
+        corner_radius=2,
     )
 
 
@@ -70,7 +74,7 @@ def reorder_name(name: str):
 def create_labels(s=None):
     """Create mailing labels (PDF) for each head of house + spouse (if any)."""
     # To debug label placement, setting border=True might help.
-    sheet = labels.Sheet(create_label_spec(), draw_label, border=False)
+    sheet = labels.Sheet(create_label_spec(), draw_label, border=True)
 
     s = s or lds_session.login()
     unit = lds_session.get_unit_number(s)
