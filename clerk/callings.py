@@ -8,7 +8,7 @@ def save_callings_snapshot(s=None):
     try:
         s = s or lds_session.login()
         unit = lds_session.get_unit_number(s)
-        callings = lds_session.get_callings(s, unit, raw=True)
+        callings = lds_session.get_unit_data(s, unit, raw=True)
         now = datetime.datetime.now().replace(microsecond=0)
         now_format = now.isoformat().replace(':', '')
         out_dir = OUTPUT_DIR / 'callings'

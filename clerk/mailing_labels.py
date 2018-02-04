@@ -61,7 +61,13 @@ def create_label(sheet, record):
     lines = []
     name = reorder_name(record['coupleName'])
     lines.append(name)
-    lines.extend(record[f'desc{i}'] for i in range(1, 6) if record[f'desc{i}'])
+    address = [
+        record[f'desc{i}']
+        for i in range(1, 6)
+        if f'desc{i}' in record
+        and record[f'desc{i}']
+    ]
+    lines.extend(address)
     sheet.add_label(lines)
 
 
@@ -78,7 +84,7 @@ def create_labels(s=None):
 
     s = s or lds_session.login()
     unit = lds_session.get_unit_number(s)
-    directory = lds_session.get_directory(s, unit)
+    directory = lds_session.get_unit_data(s, unit)['households']
     for record in directory:
         create_label(sheet, record)
 

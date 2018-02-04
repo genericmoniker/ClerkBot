@@ -15,6 +15,7 @@ class AuthError(Exception):
 
 def service_config():
     """Get the web service configuration.
+
     :return: deserialized JSON service configuration.
     """
     global _service_config
@@ -67,15 +68,7 @@ def get_unit_number(s):
     return r.json()['message']
 
 
-def get_directory(s, unit_number):
-    unit_number = str(unit_number)
-    url = service_config()['unit-membership'].replace('%@', unit_number)
-    r = s.get(url)
-    r.raise_for_status()
-    return r.json()
-
-
-def get_callings(s, unit_number, raw=True):
+def get_unit_data(s, unit_number, raw=False):
     unit = str(unit_number)
     url = service_config()['unit-members-and-callings-v2'].replace('%@', unit)
     r = s.get(url)

@@ -8,7 +8,7 @@ def begin_rtf(rtf_file):
 
 
 def write_people_line(rtf_file, record):
-    phone = record['phone']
+    phone = record.get('phone', '')
     names = record['coupleName']
     parts = names.split(',')
     rtf_file.write(r'\b {}\b0,{} \tab {}\line'.format(
@@ -24,7 +24,7 @@ def end_rtf(rtf_file):
 def create_directory(s=None):
     s = s or lds_session.login()
     unit = lds_session.get_unit_number(s)
-    directory = lds_session.get_directory(s, unit)
+    directory = lds_session.get_unit_data(s, unit)['households']
 
     file = OUTPUT_DIR / 'directory.rtf'
     with file.open('w') as f:
