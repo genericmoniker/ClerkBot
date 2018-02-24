@@ -9,7 +9,7 @@ from clerk import home_teaching, quarterly_report, missionary_accounts, \
 def main():
     parser = argparse.ArgumentParser(description='Clerk Tools')
     parser.add_argument('-c, --callings',
-                        dest='d',
+                        dest='c',
                         help='Save a snapshot of current callings',
                         action='store_true')
     parser.add_argument('-d, --directory',
