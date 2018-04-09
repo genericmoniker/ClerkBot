@@ -2,8 +2,9 @@ import argparse
 
 import sys
 
-from clerk import home_teaching, quarterly_report, missionary_accounts, \
-    mailing_labels, directory, lds_session, callings
+from clerk import quarterly_report, missionary_accounts, \
+    mailing_labels, directory, callings
+from clerk.lds_session import LDSSession, AuthError
 
 
 def main():
@@ -24,10 +25,6 @@ def main():
                         dest='ma',
                         help='Send missionary account balance emails',
                         action='store_true')
-    parser.add_argument('-t, --home-teaching',
-                        dest='ht',
-                        help='Download home teaching reports',
-                        action='store_true')
     parser.add_argument('-q, --quarterly-report',
                         dest='qr',
                         help='Download the quarterly potential reports',
@@ -40,10 +37,11 @@ def main():
 
     args = parser.parse_args()
 
+    s = LDSSession()
     try:
-        s = lds_session.login()
-    except lds_session.AuthError:
-        print('Login failed :(')
+        s.login()
+    except AuthError as e:
+        print('Login failed :(', e)
         sys.exit(2)
 
     if args.c:
@@ -54,8 +52,6 @@ def main():
         mailing_labels.create_labels(s)
     if args.ma:
         missionary_accounts.create_report_emails(s)
-    if args.ht:
-        home_teaching.download_reports(s)
     if args.qr:
         quarterly_report.download_potential_reports(s)
 

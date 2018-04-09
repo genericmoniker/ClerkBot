@@ -1,7 +1,6 @@
 import labels
 from reportlab.graphics import shapes
 
-from clerk import lds_session
 from clerk.paths import OUTPUT_DIR
 
 
@@ -77,14 +76,14 @@ def reorder_name(name: str):
     return parts[2] + ' ' + parts[0]
 
 
-def create_labels(s=None):
+def create_labels(s):
     """Create mailing labels (PDF) for each head of house + spouse (if any)."""
+    assert s.logged_in, 'Expected logged in session.'
+
     # To debug label placement, setting border=True might help.
     sheet = labels.Sheet(create_label_spec(), draw_label, border=True)
 
-    s = s or lds_session.login()
-    unit = lds_session.get_unit_number(s)
-    directory = lds_session.get_unit_data(s, unit)['households']
+    directory = s.get_unit_data()['households']
     for record in directory:
         create_label(sheet, record)
 
@@ -95,7 +94,3 @@ def create_labels(s=None):
         f'on {sheet.page_count} sheet(s) ' 
         'saved to', file
     )
-
-
-if __name__ == '__main__':
-    create_labels()

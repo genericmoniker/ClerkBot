@@ -12,11 +12,6 @@ import os
 from dateutil.relativedelta import relativedelta
 import errno
 
-from clerk import lds_session
-
-# If our stake is beta, change 'www' to 'beta':
-REPORT_URL = 'https://www.lds.org/mls/mbr/report/'\
-             'quarterly-report-details-print'
 
 REPORTS = [
     {
@@ -53,13 +48,10 @@ REPORTS = [
 
 
 def download_potential_reports(s=None):
-    try:
-        s = s or lds_session.login()
-        year, quarter = last_quarter(date.today())
-        report_dir = get_report_dir(year, quarter)
-        fetch_reports(s, year, quarter, report_dir)
-    except lds_session.AuthError:
-        print('Login failed :(')
+    assert s.logged_in, 'Expected logged in session.'
+    year, quarter = last_quarter(date.today())
+    report_dir = get_report_dir(year, quarter)
+    fetch_reports(s, year, quarter, report_dir)
 
 
 def last_quarter(today):
@@ -87,16 +79,15 @@ def get_report_dir(year, quarter):
 
 
 def fetch_reports(s, year, quarter, report_dir):
-    unit_number = lds_session.get_unit_number(s)
     for report in REPORTS:
-        fetch_report(s, unit_number, report, year, quarter, report_dir)
+        fetch_report(s, report, year, quarter, report_dir)
 
 
-def fetch_report(s, unit_number, report, year, quarter, report_dir):
+def fetch_report(s, report, year, quarter, report_dir):
     name = '{} - {} - Potential.pdf'.format(report['line'], report['name'])
     print(name)
-    params = get_report_params(report['line'], unit_number, year, quarter)
-    r = s.get(REPORT_URL, params=params, stream=True)
+    params = get_report_params(report['line'], s.unit_number, year, quarter)
+    r = s.get_report('quarterly-report-details-print', params, stream=True)
     # print(r.url)
     if r.ok:
         filename = os.path.join(report_dir, name)
@@ -129,7 +120,3 @@ def get_report_params(line, unit_number, year, quarter):
         'filter': 'POTENTIAL',
         'sort': 'nameOrder',
     }
-
-
-if __name__ == '__main__':
-    download_potential_reports()

@@ -10,16 +10,25 @@ from clerk.paths import CONF_DIR
 
 EMAIL_BODY = '''Dear Missionary Family,
 
-To make it easier for you to keep track of mission expenses, I'm sending you a 
-monthly summary. The ward mission category balance for your missionary is 
-currently:
+To help you keep track of mission expenses, I'm sending you a monthly balance 
+summary. Your missionary's account currently has this much money in it:
 
 {}
 
-The church withdraws $400 per month (on around the 6th of the month) for the 
-duration of your missionary's service, starting from the month they entered the 
-MTC, which will be subtracted from the above balance and any contributions made 
-to their account between now and then.  
+Please feel free to make an appointment with the bishop if you'd ever like to 
+discuss financing your missionary.
+
+For more details about how this all works, please read on.
+
+Starting the month that your missionary enters the MTC, the church withdraws 
+$400 from their account (on or around the 6th day of the month). Monthly 
+withdrawals continue until there have been 18 or 24 of them (depending on time
+of service). It works out that the last withdrawal will be during the month 
+prior to the month in which your missionary comes home.
+
+If your missionary has completed his or her service and has a positive balance,
+we will sweep the remaining funds into the overall ward mission fund. For both
+policy and legal reasons, excess funds cannot be refunded to donors.    
 
 With regard to financing missionary service, the church handbook says:
 
@@ -33,13 +42,6 @@ With regard to financing missionary service, the church handbook says:
     entirely on others. However, worthy missionary candidates should not be 
     prevented from serving missions solely for financial reasons when they and 
     their families have sacrificed according to their capability.
-
-If your missionary has completed his or her service and has a positive balance,
-we will sweep the remaining funds into the overall ward mission fund. For both
-policy and legal reasons, excess funds cannot be refunded to donors.    
-
-Please feel free to make an appointment with the bishop if you'd ever like to 
-discuss financing your missionary.
 
 Regards,
 {} 
@@ -56,37 +58,18 @@ class Account:
         return f'${self.balance:,.2f}'
 
 
-def create_report_emails(s=None):
+def create_report_emails(s):
+    assert s.logged_in, 'Expected logged in session.'
+
     # TODO: Nicer error handling here
     config = configparser.ConfigParser()
     with open(CONF_DIR / 'config.ini', 'r') as f:
         config.read_file(f)
 
-    try:
-        s = s or lds_session.login()
-        report = get_ward_mission_report(s)
-        accounts = process_lines(report)
-        for account in accounts:
-            create_email(config, account)
-    except lds_session.AuthError:
-        print('Login failed :(')
-
-
-def get_ward_mission_report(s):
-    year = datetime.now().year
-    account_id = '14685'  # TODO: How to get internalAccountId?
-    url = (
-        'https://www.lds.org/finance/income-expenses' 
-        f'?fromDate={year}-01-01' 
-        f'&toDate={year}-12-31' 
-        f'&internalAccountId={account_id}')
-    r = s.get(url)
-    r.raise_for_status()
-    data = r.json()
-    for category in data:
-        if category['categoryName'] == 'Ward Missionary Fund':
-            return category
-    raise Exception('Ward Mission Fund not found!')
+    report = s.get_ward_mission_report()
+    accounts = process_lines(report)
+    for account in accounts:
+        create_email(config, account)
 
 
 def process_lines(report):
@@ -122,7 +105,3 @@ def create_email(config, account):
             print('Error creating email draft:', e)
     else:
         print('No email configured for', summary)
-
-
-if __name__ == '__main__':
-    create_report_emails()

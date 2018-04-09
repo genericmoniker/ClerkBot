@@ -1,10 +1,16 @@
 """Handle the basic formatting for a concise printed member directory."""
 from clerk import lds_session
+from clerk.lds_session import Unit
 from clerk.paths import OUTPUT_DIR
 
 
 def begin_rtf(rtf_file):
     rtf_file.write(r'{\rtf1\ansi\deff0')
+
+
+def write_households(rtf_file, directory):
+    for record in directory:
+        write_people_line(rtf_file, record)
 
 
 def write_people_line(rtf_file, record):
@@ -17,26 +23,31 @@ def write_people_line(rtf_file, record):
     rtf_file.write('\r\n')
 
 
+def write_leadership(rtf_file, unit):
+    org_ids = [
+        1179,  # bishopric
+    ]
+    for org_id in org_ids:
+        org = unit.get_org_by_id(org_id)
+        for calling in org['children']:
+            pass
+
+
 def end_rtf(rtf_file):
     rtf_file.write('}')
 
 
-def create_directory(s=None):
-    s = s or lds_session.login()
-    unit = lds_session.get_unit_number(s)
-    directory = lds_session.get_unit_data(s, unit)['households']
+def create_directory(s):
+    assert s.logged_in, 'Expected logged in session.'
+    data = s.get_unit_data()
+    unit = Unit(data)
 
     file = OUTPUT_DIR / 'directory.rtf'
     with file.open('w') as f:
         begin_rtf(f)
-
-        for record in directory:
-            write_people_line(f, record)
-
+        write_households(f, unit.data['households'])
+        # TODO
+        # write_leadership(f, unit)
         end_rtf(f)
 
     print('Directory written to', file)
-
-
-if __name__ == '__main__':
-    create_directory()
