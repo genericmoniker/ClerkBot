@@ -10,7 +10,7 @@ from oauth2client import tools
 
 from oauth2client.file import Storage
 
-from clerk.paths import CONF_DIR
+from clerkbot.paths import CONF_DIR
 
 CLIENT_SECRET_FILE = CONF_DIR / 'client_secret.json'
 APPLICATION_NAME = 'Clerk Tools'

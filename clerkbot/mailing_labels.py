@@ -1,7 +1,7 @@
 import labels
 from reportlab.graphics import shapes
 
-from clerk.paths import OUTPUT_DIR
+from clerkbot.paths import OUTPUT_DIR
 
 
 def create_label_spec():

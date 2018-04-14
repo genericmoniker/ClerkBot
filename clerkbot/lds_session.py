@@ -84,10 +84,6 @@ class LDSSession:
         else:
             return r.json()
 
-    def get_report(self, report, params, stream):
-        url = 'https://www.lds.org/mls/mbr/report/' + report
-        return self._s.get(url, params=params, stream=stream)
-
     def get_ward_mission_report(self):
         year = datetime.now().year
         account_id = '14685'  # TODO: How to get internalAccountId?!!
@@ -105,12 +101,24 @@ class LDSSession:
         raise Exception('Ward Mission Fund not found!')
 
     def get_members_moved_in(self):
-        """Get a report of members who have moved into the ward.
+        """Get a report of members who have moved into the ward."""
+        url = (
+            'https://www.lds.org/mls/mbr/services/report/members-moved-in/'
+            f'unit/{self.unit_number}/1'
+        )
+        r = self._s.get(url)
+        r.raise_for_status()
+        return r.json()
 
-        """
-        # TODO
-        # https://beta.lds.org/mls/mbr/services/report/members-moved-in/unit/380695/3?lang=eng
-        # 3 means within the past 3 months
+    def get_members_moved_out(self):
+        """Get a report of members who have moved out of the ward."""
+        url = (
+            'https://www.lds.org/mls/mbr/services/report/members-moved-out/'
+            f'unit/{self.unit_number}/1'
+        )
+        r = self._s.get(url)
+        r.raise_for_status()
+        return r.json()
 
 
 class Unit:

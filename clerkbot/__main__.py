@@ -2,9 +2,9 @@ import argparse
 
 import sys
 
-from clerk import quarterly_report, missionary_accounts, \
-    mailing_labels, directory, callings
-from clerk.lds_session import LDSSession, AuthError
+from clerkbot import quarterly_report, missionary_accounts, \
+    mailing_labels, directory, callings, records
+from clerkbot.lds_session import LDSSession, AuthError
 
 
 def main():
@@ -28,6 +28,10 @@ def main():
     parser.add_argument('-q, --quarterly-report',
                         dest='qr',
                         help='Download the quarterly potential reports',
+                        action='store_true')
+    parser.add_argument('-r, --records',
+                        dest='r',
+                        help='Email a report of records moved in or out',
                         action='store_true')
 
     # Help if no args were passed.
@@ -54,6 +58,8 @@ def main():
         missionary_accounts.create_report_emails(s)
     if args.qr:
         quarterly_report.download_potential_reports(s)
+    if args.r:
+        records.create_report(s)
 
 
 if __name__ == '__main__':

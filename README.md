@@ -1,5 +1,5 @@
-Clerk
-=====
+ClerkBot
+========
 
 These are a set of utilities potentially helpful for clerks in The 
 Church of Jesus Christ of Latter-day Saints.

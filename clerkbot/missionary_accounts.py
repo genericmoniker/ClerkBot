@@ -4,8 +4,8 @@
 import configparser
 from datetime import datetime
 
-from clerk import lds_session, gmail
-from clerk.paths import CONF_DIR
+from clerkbot import lds_session, gmail
+from clerkbot.paths import CONF_DIR
 
 
 EMAIL_BODY = '''Dear Missionary Family,

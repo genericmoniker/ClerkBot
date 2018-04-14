@@ -1,6 +1,6 @@
 import datetime
 
-from clerk.paths import OUTPUT_DIR
+from clerkbot.paths import OUTPUT_DIR
 
 
 def save_callings_snapshot(s):

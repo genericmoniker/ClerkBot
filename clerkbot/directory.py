@@ -1,7 +1,7 @@
 """Handle the basic formatting for a concise printed member directory."""
-from clerk import lds_session
-from clerk.lds_session import Unit
-from clerk.paths import OUTPUT_DIR
+from clerkbot import lds_session
+from clerkbot.lds_session import Unit
+from clerkbot.paths import OUTPUT_DIR
 
 
 def begin_rtf(rtf_file):

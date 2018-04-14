@@ -1,7 +1,6 @@
-# -*- coding: utf-8 -*-
 from datetime import date
 
-from clerk.quarterly_report import last_quarter
+from clerkbot.quarterly_report import last_quarter
 
 
 def test_last_quarter_previous_year():
