@@ -1,6 +1,7 @@
 google-api-python-client
 pylabels
 python-dateutil
+reportlab
 requests
 
 pytest

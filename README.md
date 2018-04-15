@@ -16,7 +16,7 @@ Actions
 
 Actions are invoked from the command line. Try:
 
-    clerk -h
+    clerkbot -h
 
 Some actions have further explanation, below.
 
