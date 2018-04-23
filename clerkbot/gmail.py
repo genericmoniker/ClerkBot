@@ -1,4 +1,3 @@
-import argparse
 import base64
 from email.mime.text import MIMEText
 from pathlib import Path
@@ -13,7 +12,7 @@ from oauth2client.file import Storage
 from clerkbot.paths import CONF_DIR
 
 CLIENT_SECRET_FILE = CONF_DIR / 'client_secret.json'
-APPLICATION_NAME = 'Clerk Tools'
+APPLICATION_NAME = 'ClerkBot'
 
 # If modifying these scopes, delete your previously saved credentials
 # at ~/.credentials/clerk-tools.json
@@ -32,7 +31,7 @@ def create_message(sender, to, subject, message_text):
     :param to: Email address of the receiver (may be a comma-separated list).
     :param subject: The subject of the email message.
     :param message_text: The text of the email message.
-    :return: An object containing a base64url encoded email object.
+    :return: A dict containing a base64url encoded email object.
     """
     message = MIMEText(message_text)
     message['to'] = to
@@ -41,20 +40,42 @@ def create_message(sender, to, subject, message_text):
     return {'raw': base64.urlsafe_b64encode(message.as_bytes()).decode()}
 
 
-def create_draft(message_body):
+def create_draft(message: dict):
     """Create and insert a draft email.
 
-    :param message_body: The body of the email message, including headers.
+    :param message: An email message, as created with `create_message`.
     :return: Draft object, including draft id and message meta data.
     :raise: googleapiclient.errors.HttpError on error.
     """
+    service = get_service()
+    message = {'message': message}
+    draft = service.users().drafts().create(
+        userId='me',
+        body=message,
+    ).execute()
+    return draft
+
+
+def send_message(message: dict):
+    """Send an email message.
+
+    :param message: An email message, as created with `create_message`.
+    :return: Message object, including draft id and message meta data.
+    :raise: googleapiclient.errors.HttpError on error.
+    """
+    service = get_service()
+    sent = service.users().messages().send(
+        userId='me',
+        body=message,
+    ).execute()
+    return sent
+
+
+def get_service():
+    """Get an authenticated gmail service instance."""
     credentials = get_credentials()
     http = credentials.authorize(httplib2.Http())
-    service = discovery.build('gmail', 'v1', http=http)
-    message = {'message': message_body}
-    draft = service.users().drafts().create(userId='me',
-                                            body=message).execute()
-    return draft
+    return discovery.build('gmail', 'v1', http=http)
 
 
 def get_credentials():
@@ -63,13 +84,12 @@ def get_credentials():
     If nothing has been stored, or if the stored credentials are invalid,
     the OAuth2 flow is completed to obtain the new credentials.
 
-    Return:
-        Credentials, the obtained credential.
+    :return: Credentials, the obtained credential.
     """
     home_dir = Path.home()
     credential_dir = home_dir / '.credentials'
     credential_dir.mkdir(parents=True, exist_ok=True)
-    credential_path = credential_dir / 'clerk-tools.json'
+    credential_path = credential_dir / 'clerkbot.json'
 
     store = Storage(str(credential_path))
     credentials = store.get()

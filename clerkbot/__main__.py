@@ -8,7 +8,7 @@ from clerkbot.lds_session import LDSSession, AuthError
 
 
 def main():
-    parser = argparse.ArgumentParser(description='Clerk Tools')
+    parser = argparse.ArgumentParser(description='ClerkBot')
     parser.add_argument('-c, --callings',
                         dest='c',
                         help='Save a snapshot of current callings',
@@ -59,7 +59,7 @@ def main():
     if args.qr:
         quarterly_report.download_potential_reports(s)
     if args.r:
-        records.create_report(s)
+        records.create_notification(s)
 
 
 if __name__ == '__main__':

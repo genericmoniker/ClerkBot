@@ -1,11 +1,7 @@
 """Create email reports of missionary balances.
 
 """
-import configparser
-from datetime import datetime
-
-from clerkbot import lds_session, gmail
-from clerkbot.paths import CONF_DIR
+from clerkbot import gmail, configuration
 
 
 EMAIL_BODY = '''Dear Missionary Family,
@@ -61,11 +57,7 @@ class Account:
 def create_report_emails(s):
     assert s.logged_in, 'Expected logged in session.'
 
-    # TODO: Nicer error handling here
-    config = configparser.ConfigParser()
-    with open(CONF_DIR / 'config.ini', 'r') as f:
-        config.read_file(f)
-
+    config = configuration.read()
     report = s.get_ward_mission_report()
     accounts = process_lines(report)
     for account in accounts:
