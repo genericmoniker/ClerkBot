@@ -1,6 +1,5 @@
+.git
 .idea
-.cache
 .venv
 __pycache__
 *.egg-info
-conf/*

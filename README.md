@@ -38,10 +38,28 @@ save `client_secret.json` in a `conf` directory at the root of the project.
 ```ini
 [emails]
 Doe, Jane: doefamily@live.com
-Smith, John: jonsdad@gmail.com
+Smith, John: jonsdad@gmail.com, jonsmom@gmail.com
 
 ```
 
+Docker
+------
+
+To build an image tagged "clerkbot-img", in the project root run:
+
+```bash
+docker build -t clerkbot-img .
+```
+
+To run clerkbot in a new container:
+
+```bash
+docker run -t --rm -v ~/clerkbot/conf:/conf -v ~/clerkbot/output:/output \
+    -e "LDS_USERNAME=myusername" -e "LDS_PASSWORD=mypassword" \
+    --name clerkbot-cont clerkbot-img clerkbot --records
+```
+
+To use a pre-built container, look for genericmoniker/clerkbot on DockerHub.
 
 Project Notes
 -------------
