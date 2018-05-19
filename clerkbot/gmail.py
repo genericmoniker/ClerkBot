@@ -1,6 +1,6 @@
 import base64
 from email.mime.text import MIMEText
-from pathlib import Path
+from os import fspath
 
 import httplib2
 from apiclient import discovery
@@ -12,10 +12,11 @@ from oauth2client.file import Storage
 from clerkbot.paths import CONF_DIR
 
 CLIENT_SECRET_FILE = CONF_DIR / 'client_secret.json'
+CREDENTIALS_FILE = CONF_DIR / 'clerkbot.json'
+
 APPLICATION_NAME = 'ClerkBot'
 
-# If modifying these scopes, delete your previously saved credentials
-# at ~/.credentials/clerk-tools.json
+# If modifying SCOPES, delete your previously saved CREDENTIALS_FILE.
 SCOPES = 'https://www.googleapis.com/auth/gmail.compose'
 
 # The documentation says to do this:
@@ -86,16 +87,11 @@ def get_credentials():
 
     :return: Credentials, the obtained credential.
     """
-    home_dir = Path.home()
-    credential_dir = home_dir / '.credentials'
-    credential_dir.mkdir(parents=True, exist_ok=True)
-    credential_path = credential_dir / 'clerkbot.json'
-
-    store = Storage(str(credential_path))
+    store = Storage(fspath(CREDENTIALS_FILE))
     credentials = store.get()
     if not credentials or credentials.invalid:
         flow = client.flow_from_clientsecrets(CLIENT_SECRET_FILE, SCOPES)
         flow.user_agent = APPLICATION_NAME
         credentials = tools.run_flow(flow, store, flags)
-        print('Storing credentials to', credential_path)
+        print('Storing credentials to', CREDENTIALS_FILE)
     return credentials
