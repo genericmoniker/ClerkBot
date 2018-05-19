@@ -14,5 +14,5 @@ script:
     - py.test
 
     - docker build -t genericmoniker/clerkbot .
-    - docker login -e="$DOCKER_EMAIL" -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
+    - docker login --username "$DOCKER_USERNAME" --password "$DOCKER_PASSWORD"
     - docker push genericmoniker/clerkbot
