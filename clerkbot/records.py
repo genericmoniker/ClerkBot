@@ -3,13 +3,13 @@ from contextlib import contextmanager
 from datetime import datetime, timedelta
 
 from clerkbot import gmail, configuration
+from clerkbot.paths import CONF_DIR
 
 
 def create_notification(s):
     buffer = io.StringIO()
-    # TODO: real last_checked
-    last_checked = (datetime.now() - timedelta(days=30)).date()
-    _generate_body(s, buffer, last_checked)
+    with last_checked() as checked_date:
+        _generate_body(s, buffer, checked_date)
     body = buffer.getvalue()
     buffer.close()
     if body:
@@ -71,4 +71,14 @@ def _send_email(body):
 
 @contextmanager
 def last_checked():
-    pass
+    file = CONF_DIR / 'records-checked.txt'
+    try:
+        date_str = file.read_text().strip()
+        date = datetime.strptime(date_str, "%Y-%m-%d").date()
+    except Exception as e:
+        print('Reporting last 30 days because', e)
+        date = (datetime.now() - timedelta(days=30)).date()
+
+    yield date
+
+    file.write_text(datetime.now().date().isoformat())
