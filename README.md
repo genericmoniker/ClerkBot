@@ -55,9 +55,13 @@ To run clerkbot in a new container:
 
 ```bash
 docker run -t --rm -v ~/clerkbot/conf:/conf -v ~/clerkbot/output:/output \
+    -e TZ=America/Denver \
     -e "LDS_USERNAME=myusername" -e "LDS_PASSWORD=mypassword" \
     --name clerkbot-cont clerkbot-img clerkbot --records
 ```
+
+Note that some tasks depend on the correct time zone being set, so set the TZ
+value accordingly.
 
 To use a pre-built container, look for genericmoniker/clerkbot on DockerHub.
 
