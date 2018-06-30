@@ -1,6 +1,10 @@
 """Create email reports of missionary balances.
 
 """
+import sys
+
+from io import StringIO
+
 from clerkbot import gmail, configuration
 
 
@@ -17,10 +21,10 @@ discuss financing your missionary.
 For more details about how this all works, please read on.
 
 Starting the month that your missionary enters the MTC, the church withdraws 
-$400 from their account (on or around the 6th day of the month). Monthly 
+$400 from their account (around the 6th day of the month). Monthly 
 withdrawals continue until there have been 18 or 24 of them (depending on time
-of service). It works out that the last withdrawal will be during the month 
-prior to the month in which your missionary comes home.
+of service). It works out that the last withdrawal will usually be during the 
+month prior to the month in which your missionary comes home.
 
 If your missionary has completed his or her service and has a positive balance,
 we will sweep the remaining funds into the overall ward mission fund. For both
@@ -43,6 +47,15 @@ Regards,
 {} 
 '''
 
+NOTIFICATION_BODY = '''Hello,
+
+Drafts for missionary account emails have been created for you. After reviewing
+them for accuracy, feel free to send them.
+
+--ClerkBot
+
+'''
+
 
 class Account:
     def __init__(self, name, balance):
@@ -54,14 +67,32 @@ class Account:
         return f'${self.balance:,.2f}'
 
 
+class Tee:
+    def __init__(self, files):
+        self.files = files
+
+    def write(self, s):
+        for f in self.files:
+            f.write(s)
+
+
 def create_report_emails(s):
     assert s.logged_in, 'Expected logged in session.'
 
     config = configuration.read()
     report = s.get_ward_mission_report()
     accounts = process_lines(report)
+    buffer = StringIO()
+    tee = Tee([sys.stdout, buffer])
     for account in accounts:
-        create_email(config, account)
+        create_email(config, account, tee)
+    notification = gmail.create_message(
+        'me',
+        config['emails'].get('mission_account_notifications'),
+        'Mission account summaries ready',
+        NOTIFICATION_BODY + buffer.getvalue()
+    )
+    gmail.send_message(notification)
 
 
 def process_lines(report):
@@ -79,7 +110,7 @@ def process_lines(report):
     return items
 
 
-def create_email(config, account):
+def create_email(config, account, f):
     to = config['emails'].get(account.name)
     clerk_name = config['emails'].get('clerk_name', 'Ward Clerk')
     summary = account.name + ' ' + account.balance_str
@@ -92,8 +123,8 @@ def create_email(config, account):
             text,)
         try:
             gmail.create_draft(message)
-            print('Email draft created to:', to, summary)
+            print('Email draft created to:', to, summary, file=f)
         except Exception as e:
-            print('Error creating email draft:', e)
+            print('Error creating email draft:', e, file=f)
     else:
-        print('No email configured for', summary)
+        print('No email configured for', summary, file=f)

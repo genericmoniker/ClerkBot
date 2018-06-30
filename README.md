@@ -40,7 +40,19 @@ save `client_secret.json` in a `conf` directory at the root of the project.
 Doe, Jane: doefamily@live.com
 Smith, John: jonsdad@gmail.com, jonsmom@gmail.com
 
+mission_account_notifications: clerk@test.org
 ```
+
+### Record Notifications
+
+This action sends an email notification of any member records that have been
+moved in or out of the ward since the last time the action was run. You might
+configure a cron job to run this daily.
+
+The notification email is sent to email addresses (comma separated) in the
+`[emails]` section of the config.ini specified by the `record_notifications`
+key.
+
 
 Docker
 ------
