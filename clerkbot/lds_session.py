@@ -120,6 +120,10 @@ class LDSSession:
         r.raise_for_status()
         return r.json()
 
+    def get_report(self, report, params, stream):
+        url = 'https://www.lds.org/mls/mbr/report/' + report
+        return self._s.get(url, params=params, stream=stream)
+
 
 class Unit:
     # Dumb brute-force implementations for now...
