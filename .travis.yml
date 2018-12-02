@@ -10,9 +10,4 @@ services:
 
 install: "pip install -r requirements.txt"
 
-script:
-    - py.test
-
-    - docker build -t genericmoniker/clerkbot .
-    - docker login --username "$DOCKER_USERNAME" --password "$DOCKER_PASSWORD"
-    - docker push genericmoniker/clerkbot
+script: build.sh
