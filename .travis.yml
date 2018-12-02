@@ -10,4 +10,4 @@ services:
 
 install: "pip install -r requirements.txt"
 
-script: build.sh
+script: bash build.sh
