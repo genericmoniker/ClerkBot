@@ -43,7 +43,7 @@ def draw_label(label, width, height, obj):
     pad = 4
 
     line_height = font_size + pad
-    x = pad
+    x = pad + 2
     y = [height - pad]  # In a list for closure modification.
 
     def print_line(text=''):
@@ -81,7 +81,7 @@ def create_labels(s):
     assert s.logged_in, 'Expected logged in session.'
 
     # To debug label placement, setting border=True might help.
-    sheet = labels.Sheet(create_label_spec(), draw_label, border=True)
+    sheet = labels.Sheet(create_label_spec(), draw_label, border=False)
 
     directory = s.get_unit_data()['households']
     for record in directory:
@@ -94,3 +94,5 @@ def create_labels(s):
         f'on {sheet.page_count} sheet(s) ' 
         'saved to', file
     )
+    print()
+    print('TIP: Try printing a single page to test proper alignment.')
