@@ -113,7 +113,7 @@ def process_lines(report):
 def create_email(config, account, f):
     to = config['emails'].get(account.name)
     clerk_name = config['emails'].get('clerk_name', 'Ward Clerk')
-    summary = account.name + ' ' + account.balance_str
+    summary = f'{account.name} {account.balance_str}'
     if to:
         text = EMAIL_BODY.format(summary, clerk_name)
         message = gmail.create_message(
@@ -123,8 +123,8 @@ def create_email(config, account, f):
             text,)
         try:
             gmail.create_draft(message)
-            print('Email draft created to:', to, summary, file=f)
+            print(summary, '— Email draft created to:', to, file=f)
         except Exception as e:
             print('Error creating email draft:', e, file=f)
     else:
-        print('No email configured for', summary, file=f)
+        print(summary, '— No email configured', file=f)
