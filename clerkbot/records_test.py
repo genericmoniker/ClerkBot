@@ -74,3 +74,18 @@ def test_only_includes_changes_since_last_checked():
     assert 'Day, Daisy' not in body
     assert 'Nancy, Spider' in body
     assert 'Noah, Rose' not in body
+
+
+def test_prior_unit_unknown_is_formatted_appropriately():
+    s = Mock()
+    moved_in_data = MOVED_IN_DATA.copy()
+    moved_in_data[0]['priorUnit'] = None
+    moved_in_data[0]['priorUnitName'] = None
+    s.get_members_moved_in.return_value = moved_in_data
+    s.get_members_moved_out.return_value = []
+    buffer = io.StringIO()
+    last_checked = date(2018, 2, 21)
+    _generate_body(s, buffer, last_checked)
+    body = buffer.getvalue()
+    assert 'None' not in body
+    assert 'unknown unit' in body

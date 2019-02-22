@@ -21,28 +21,28 @@ def create_notification(s):
 
 
 def _generate_body(s, buffer, since):
-    moved_in = [m for m in s.get_members_moved_in() if
-                _parse_date(m['moveDate']) > since]
+    moved_in = [
+        m
+        for m in s.get_members_moved_in()
+        if _parse_date(m['moveDate']) > since
+    ]
     if moved_in:
         print('These records have been moved into the ward:', file=buffer)
         for mi in moved_in:
-            print(
-                '-', mi['name'],
-                'from the', mi['priorUnitName'],
-                file=buffer
-            )
+            prior = mi['priorUnitName']
+            prior = f'from the {prior}' if prior else 'from an unknown unit'
+            print('-', mi['name'], prior, file=buffer)
         print(file=buffer)
 
-    moved_out = [m for m in s.get_members_moved_out() if
-                 _parse_date(m['moveDate']) > since]
+    moved_out = [
+        m
+        for m in s.get_members_moved_out()
+        if _parse_date(m['moveDate']) > since
+    ]
     if moved_out:
         print('These records have been moved out of the ward:', file=buffer)
         for mo in moved_out:
-            print(
-                '-', mo['name'],
-                'to the', mo['nextUnitName'],
-                file=buffer
-            )
+            print('-', mo['name'], 'to the', mo['nextUnitName'], file=buffer)
 
 
 def _parse_date(date_str):
@@ -54,12 +54,7 @@ def _send_email(body):
 
     to = config['emails'].get('record_notifications')
     if to:
-        message = gmail.create_message(
-            'me',
-            to,
-            'Record notification',
-            body,
-        )
+        message = gmail.create_message('me', to, 'Record notification', body)
         try:
             gmail.send_message(message)
             print('Email sent to:', to)
