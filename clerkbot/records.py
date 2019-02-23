@@ -9,7 +9,9 @@ from clerkbot.paths import CONF_DIR
 def create_notification(s):
     buffer = io.StringIO()
     with last_checked() as checked_date:
-        _generate_body(s, buffer, checked_date)
+        # We don't include records moved today because if they move after the
+        # script ran for today, we'd skip those tomorrow and miss them.
+        _generate_body(s, buffer, checked_date, datetime.today())
     body = buffer.getvalue()
     buffer.close()
     if body:
@@ -20,7 +22,14 @@ def create_notification(s):
         print('No new record changes.')
 
 
-def _generate_body(s, buffer, since):
+def _generate_body(s, buffer, since, until):
+    """Generate the notification email body.
+
+    :param s: lds_session instance.
+    :param buffer: buffer into which to write the body.
+    :param since: include records moved on or after this date.
+    :param until: include records moved before this date.
+    """
     moved_in = [
         m
         for m in s.get_members_moved_in()
@@ -37,7 +46,7 @@ def _generate_body(s, buffer, since):
     moved_out = [
         m
         for m in s.get_members_moved_out()
-        if _parse_date(m['moveDate']) > since
+        if until > _parse_date(m['moveDate']) >= since
     ]
     if moved_out:
         print('These records have been moved out of the ward:', file=buffer)
