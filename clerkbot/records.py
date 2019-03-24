@@ -11,7 +11,7 @@ def create_notification(s):
     with last_checked() as checked_date:
         # We don't include records moved today because if they move after the
         # script ran for today, we'd skip those tomorrow and miss them.
-        _generate_body(s, buffer, checked_date, datetime.today())
+        _generate_body(s, buffer, checked_date, datetime.today().date())
     body = buffer.getvalue()
     buffer.close()
     if body:
