@@ -4,30 +4,39 @@
 #
 #    pip-compile --output-file requirements.txt requirements.in
 #
-atomicwrites==1.2.1       # via pytest
-attrs==18.2.0             # via pytest
-cachetools==3.0.0         # via google-auth
-certifi==2018.11.29       # via requests
+atomicwrites==1.3.0       # via pytest
+attrs==19.1.0             # via pytest
+cachetools==3.1.0         # via google-auth
+certifi==2019.3.9         # via requests
 chardet==3.0.4            # via requests
+click==7.0                # via pip-tools
 colorama==0.4.1           # via pytest
-google-api-python-client==1.7.5
+entrypoints==0.3          # via flake8
+faker==1.0.5
+flake8==3.7.7
+google-api-python-client==1.7.8
 google-auth-httplib2==0.0.3  # via google-api-python-client
-google-auth==1.6.1        # via google-api-python-client, google-auth-httplib2
-httplib2==0.12.0          # via google-api-python-client, google-auth-httplib2, oauth2client
-idna==2.7                 # via requests
-more-itertools==4.3.0     # via pytest
+google-auth==1.6.3        # via google-api-python-client, google-auth-httplib2
+httplib2==0.12.1          # via google-api-python-client, google-auth-httplib2, oauth2client
+idna==2.8                 # via requests
+mccabe==0.6.1             # via flake8
+more-itertools==7.0.0     # via pytest
 oauth2client==4.1.3
-pillow==5.3.0             # via reportlab
-pluggy==0.8.0             # via pytest
-py==1.7.0                 # via pytest
-pyasn1-modules==0.2.2     # via google-auth, oauth2client
-pyasn1==0.4.4             # via oauth2client, pyasn1-modules, rsa
+pillow==6.0.0             # via reportlab
+pip-tools==3.6.0
+pluggy==0.9.0             # via pytest
+py==1.8.0                 # via pytest
+pyasn1-modules==0.2.4     # via google-auth, oauth2client
+pyasn1==0.4.5             # via oauth2client, pyasn1-modules, rsa
+pycodestyle==2.5.0        # via flake8
+pyflakes==2.1.1           # via flake8
 pylabels==1.2.1
-pytest==4.0.1
-python-dateutil==2.7.5
-reportlab==3.5.12
-requests==2.20.1
+pytest==4.4.1
+python-dateutil==2.8.0
+reportlab==3.5.19
+requests==2.21.0
 rsa==4.0                  # via google-auth, oauth2client
-six==1.11.0               # via google-api-python-client, google-auth, more-itertools, oauth2client, pytest, python-dateutil
+six==1.12.0               # via faker, google-api-python-client, google-auth, oauth2client, pip-tools, pytest, python-dateutil
+text-unidecode==1.2       # via faker
 uritemplate==3.0.0        # via google-api-python-client
-urllib3==1.24.1           # via requests
+urllib3==1.24.2           # via requests

@@ -5,4 +5,7 @@ python-dateutil
 reportlab
 requests
 
+Faker
+flake8
+pip-tools
 pytest
