@@ -123,33 +123,3 @@ class LDSSession:
     def get_report(self, report, params, stream):
         url = 'https://www.lds.org/mls/mbr/report/' + report
         return self._s.get(url, params=params, stream=stream)
-
-
-class Unit:
-    # Dumb brute-force implementations for now...
-
-    def __init__(self, unit_data):
-        self.data = unit_data
-
-    def get_org_by_id(self, id_):
-        # Organizations are more complicated than this. Need more analysis.
-        orgs = self.data['callings']
-        for org in orgs:
-            if org['typeId'] == id_:
-                return org
-        return None
-
-    def get_individual_by_id(self, id_):
-        directory = self.data['households']
-        for household in directory:
-            for individual in self._flatten_household(household):
-                if individual['individualId'] == id_:
-                    return individual
-        return None
-
-    @staticmethod
-    def _flatten_household(household):
-        yield household['headOfHouse']
-        if 'spouse' in household:
-            yield household['spouse']
-        yield from household['children']
