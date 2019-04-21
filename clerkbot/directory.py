@@ -1,6 +1,4 @@
 """Handle the basic formatting for a concise printed member directory."""
-from clerkbot import lds_session
-from clerkbot.lds_session import Unit
 from clerkbot.paths import OUTPUT_DIR
 
 
@@ -40,12 +38,11 @@ def end_rtf(rtf_file):
 def create_directory(s):
     assert s.logged_in, 'Expected logged in session.'
     data = s.get_unit_data()
-    unit = Unit(data)
 
     file = OUTPUT_DIR / 'directory.rtf'
     with file.open('w') as f:
         begin_rtf(f)
-        write_households(f, unit.data['households'])
+        write_households(f, data['households'])
         # TODO
         # write_leadership(f, unit)
         end_rtf(f)
