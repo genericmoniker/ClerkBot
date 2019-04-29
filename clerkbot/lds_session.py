@@ -84,6 +84,44 @@ class LDSSession:
         else:
             return r.json()
 
+    def get_action_interview_list(self):
+        url = (
+            'https://lcr.lds.org/report/action-interview-list-print'
+            '?pdf=true'
+            '&lang=eng'
+            f'&unitNumber={self.unit_number}'
+            '&section=BISHOPS_YOUTH_INTERVIEWS_CURRENT'
+            '&section=BISHOPS_YOUTH_INTERVIEWS_PLUS_1'
+            '&section=BISHOPRIC_COUNSELOR_YOUTH_INTERVIEWS_CURRENT'
+            '&section=BISHOPRIC_COUNSELOR_YOUTH_INTERVIEWS_PLUS_1'
+            '&section=YOUNG_SINGLE_ADULT_INTERVIEWS_CURRENT'
+            '&section=YOUNG_SINGLE_ADULT_INTERVIEWS_PLUS_1'
+            '&sort=CHILDREN_APPROACHING_BAPTISM:%2BbirthDate'
+            '&sort=UNBAPTIZED_MEMBERS:%2Bname'
+            '&sort=OVERDUE_AARONIC_PRIESTHOOD_ORDINATIONS:-birthDate'
+            '&sort=YOUNG_MEN_APPROACHING_MISSION_AGE:%2BbirthDate'
+            '&sort=MEN_WHO_HAVE_NOT_SERVED_MISSION:-birthDate'
+            '&sort=POTENTIAL_MISSIONARY_COUPLES:%2Bname'
+            '&sort=BISHOPS_YOUTH_INTERVIEWS_MINUS_2:%2BbirthDate'
+            '&sort=BISHOPS_YOUTH_INTERVIEWS_MINUS_1:%2BbirthDate'
+            '&sort=BISHOPS_YOUTH_INTERVIEWS_CURRENT:%2BbirthDate'
+            '&sort=BISHOPS_YOUTH_INTERVIEWS_PLUS_1:%2BbirthDate'
+            '&sort=BISHOPS_YOUTH_INTERVIEWS_PLUS_2:%2BbirthDate'
+            '&sort=BISHOPRIC_COUNSELOR_YOUTH_INTERVIEWS_MINUS_2:%2BbirthDate'
+            '&sort=BISHOPRIC_COUNSELOR_YOUTH_INTERVIEWS_MINUS_1:%2BbirthDate'
+            '&sort=BISHOPRIC_COUNSELOR_YOUTH_INTERVIEWS_CURRENT:%2BbirthDate'
+            '&sort=BISHOPRIC_COUNSELOR_YOUTH_INTERVIEWS_PLUS_1:%2BbirthDate'
+            '&sort=BISHOPRIC_COUNSELOR_YOUTH_INTERVIEWS_PLUS_2:%2BbirthDate'
+            '&sort=YOUNG_SINGLE_ADULT_INTERVIEWS_MINUS_2:%2BbirthDate'
+            '&sort=YOUNG_SINGLE_ADULT_INTERVIEWS_MINUS_1:%2BbirthDate'
+            '&sort=YOUNG_SINGLE_ADULT_INTERVIEWS_CURRENT:%2BbirthDate'
+            '&sort=YOUNG_SINGLE_ADULT_INTERVIEWS_PLUS_1:%2BbirthDate'
+            '&sort=YOUNG_SINGLE_ADULT_INTERVIEWS_PLUS_2:%2BbirthDate'
+        )
+        r = self._s.get(url)
+        r.raise_for_status()
+        return r.content
+
     def get_ward_mission_report(self):
         year = datetime.now().year
         account_id = '14685'  # TODO: How to get internalAccountId?!!

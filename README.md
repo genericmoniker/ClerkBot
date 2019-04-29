@@ -36,11 +36,13 @@ save `client_secret.json` in a `conf` directory at the root of the project.
    should look something like this:
 
 ```ini
+[DEFAULT]
+clerk_name: John Clerk
+clerk_email: john.clerk@example.org
+
 [emails]
 Doe, Jane: doefamily@live.com
 Smith, John: jonsdad@gmail.com, jonsmom@gmail.com
-
-mission_account_notifications: clerk@test.org
 ```
 
 ### Record Notifications
@@ -53,6 +55,14 @@ The notification email is sent to email addresses (comma separated) in the
 `[emails]` section of the config.ini specified by the `record_notifications`
 key.
 
+### Interview Notifications
+
+This action sends an email with the Action and Interview List attached. This is
+useful for a ward that has an assistant executive secretary that might not have
+access to the list via LCR.
+
+The email is sent to addresses in the `[emails]` section of the config.ini 
+specified by the `interview_notifications` key.
 
 Docker
 ------

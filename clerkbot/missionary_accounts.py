@@ -88,7 +88,7 @@ def create_report_emails(s):
         create_email(config, account, tee)
     notification = gmail.create_message(
         'me',
-        config['emails'].get('mission_account_notifications'),
+        config['emails'].get('clerk_email'),
         'Mission account summaries ready',
         NOTIFICATION_BODY + buffer.getvalue()
     )
