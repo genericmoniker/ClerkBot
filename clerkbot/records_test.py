@@ -2,7 +2,7 @@ import io
 from datetime import date
 from unittest.mock import Mock
 
-from clerkbot.records import _generate_body
+from clerkbot.records import _generate_body, _get_members_moved
 
 MOVED_IN_DATA = [
     {
@@ -122,16 +122,41 @@ def _setup(moved_in, moved_out):
     return s, io.StringIO()
 
 
+def test_members_moved():
+    members = [
+        {'name': 'Third', 'moveDate': '20190503'},
+        {'name': 'Fourth', 'moveDate': '20190504'},
+        {'name': 'Fifth', 'moveDate': '20190505'},
+        {'name': 'Sixth', 'moveDate': '20190506'},
+    ]
+
+    since = date(2019, 5, 3)
+    until = date(2019, 5, 7)
+    moved = str(_get_members_moved(members, since, until))
+    assert 'Third' in moved
+    assert 'Fourth' in moved
+    assert 'Fifth' in moved
+    assert 'Sixth' in moved
+
+    since = date(2019, 5, 4)
+    until = date(2019, 5, 5)
+    moved = str(_get_members_moved(members, since, until))
+    assert 'Third' not in moved
+    assert 'Fourth' in moved
+    assert 'Fifth' not in moved
+    assert 'Sixth' not in moved
+
+
 def test_only_includes_changes_since_last_checked():
     s, buffer = _setup(MOVED_IN_DATA, MOVED_OUT_DATA)
     last_checked = date(2018, 4, 1)
-    until = date(2018, 4, 9)
+    until = date(2018, 4, 16)
     _generate_body(s, buffer, last_checked, until)
     body = buffer.getvalue()
-    assert 'Nancy, Charles' in body
-    assert 'Day, Daisy' not in body
-    assert 'Nancy, Spider' in body
-    assert 'Noah, Rose' not in body
+    assert 'Day, Daisy' not in body  # moveDate: 20180318
+    assert 'Noah, Rose' not in body  # moveDate: 20180318
+    assert 'Nancy, Spider' in body   # moveDate: 20180408
+    assert 'Nancy, Charles' in body  # moveDate: 20180415
 
 
 def test_limited_by_until_param():
@@ -181,7 +206,7 @@ def test_daily_run_catches_moved_records():
             'nextUnitNumber': 111111,
             'addressUnknown': False,
             'deceased': False,
-        }
+        },
     ]
     s, buffer = _setup([], moved_out_data)
     last_checked = date(2019, 2, 22)
@@ -199,7 +224,7 @@ def test_prior_unit_unknown_is_formatted_appropriately():
     moved_in_data[0]['priorUnitName'] = None
     s, buffer = _setup(moved_in_data, [])
     last_checked = date(2018, 2, 21)
-    until = date(2018, 4, 9)
+    until = date(2018, 4, 30)
     _generate_body(s, buffer, last_checked, until)
     body = buffer.getvalue()
     assert 'None' not in body

@@ -30,11 +30,7 @@ def _generate_body(s, buffer, since, until):
     :param since: include records moved on or after this date.
     :param until: include records moved before this date.
     """
-    moved_in = [
-        m
-        for m in s.get_members_moved_in()
-        if _parse_date(m['moveDate']) > since
-    ]
+    moved_in = _get_members_moved(s.get_members_moved_in(), since, until)
     if moved_in:
         print('These records have been moved into the ward:', file=buffer)
         for mi in moved_in:
@@ -43,15 +39,22 @@ def _generate_body(s, buffer, since, until):
             print('-', mi['name'], prior, file=buffer)
         print(file=buffer)
 
-    moved_out = [
-        m
-        for m in s.get_members_moved_out()
-        if until > _parse_date(m['moveDate']) >= since
-    ]
+    moved_out = _get_members_moved(s.get_members_moved_out(), since, until)
     if moved_out:
         print('These records have been moved out of the ward:', file=buffer)
         for mo in moved_out:
             print('-', mo['name'], 'to the', mo['nextUnitName'], file=buffer)
+
+
+def _get_members_moved(members, since, until):
+    """Get members with move dates on or after `since`, and before `until`."""
+    if since >= until:
+        raise ValueError('Invalid since (%s) and until (%s)', since, until)
+    return [
+        m
+        for m in members
+        if until > _parse_date(m['moveDate']) >= since
+    ]
 
 
 def _parse_date(date_str):
