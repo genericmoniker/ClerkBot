@@ -76,11 +76,9 @@ class Tee:
             f.write(s)
 
 
-def create_report_emails(s):
-    assert s.logged_in, 'Expected logged in session.'
-
+def create_report_emails(lcr):
     config = configuration.read()
-    report = s.get_ward_mission_report()
+    report = lcr.ward_mission_report()
     accounts = process_lines(report)
     buffer = StringIO()
     tee = Tee([sys.stdout, buffer])

@@ -2,16 +2,18 @@ import io
 from contextlib import contextmanager
 from datetime import datetime, timedelta
 
+from lcr import API
+
 from clerkbot import gmail, configuration
 from clerkbot.paths import CONF_DIR
 
 
-def create_notification(s):
+def create_notification(lcr: API):
     buffer = io.StringIO()
     with last_checked() as checked_date:
         # We don't include records moved today because if they move after the
         # script ran for today, we'd skip those tomorrow and miss them.
-        _generate_body(s, buffer, checked_date, datetime.today().date())
+        _generate_body(lcr, buffer, checked_date, datetime.today().date())
     body = buffer.getvalue()
     buffer.close()
     if body:
@@ -22,7 +24,7 @@ def create_notification(s):
         print('No new record changes.')
 
 
-def _generate_body(s, buffer, since, until):
+def _generate_body(lcr, buffer, since, until):
     """Generate the notification email body.
 
     :param s: lds_session instance.
@@ -30,7 +32,7 @@ def _generate_body(s, buffer, since, until):
     :param since: include records moved on or after this date.
     :param until: include records moved before this date.
     """
-    moved_in = _get_members_moved(s.get_members_moved_in(), since, until)
+    moved_in = _get_members_moved(lcr.members_moved_in(1), since, until)
     if moved_in:
         print('These records have been moved into the ward:', file=buffer)
         for mi in moved_in:
@@ -39,7 +41,7 @@ def _generate_body(s, buffer, since, until):
             print('-', mi['name'], prior, file=buffer)
         print(file=buffer)
 
-    moved_out = _get_members_moved(s.get_members_moved_out(), since, until)
+    moved_out = _get_members_moved(lcr.members_moved_out(1), since, until)
     if moved_out:
         print('These records have been moved out of the ward:', file=buffer)
         for mo in moved_out:

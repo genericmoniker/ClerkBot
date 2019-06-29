@@ -1,6 +1,8 @@
 import argparse
-
+import os
 import sys
+
+from getpass import getpass
 
 from clerkbot import (
     quarterly_report,
@@ -11,7 +13,8 @@ from clerkbot import (
     callings,
     records,
 )
-from clerkbot.lds_session import LDSSession, AuthError
+from clerkbot.lcr_plus import API
+from lcr import InvalidCredentialsError
 
 
 def main():
@@ -66,27 +69,42 @@ def main():
 
     args = parser.parse_args()
 
-    s = LDSSession()
+    username, password, unit_number = get_credentials()
     try:
-        s.login()
-    except AuthError as e:
+        lcr = API(username, password, unit_number)
+    except InvalidCredentialsError as e:
         print('Login failed :(', e)
         sys.exit(2)
 
-    if args.c:
-        callings.save_callings_snapshot(s)
-    if args.d:
-        directory.create_directory(s)
-    if args.i:
-        interviews.create_list_email(s)
-    if args.l:
-        mailing_labels.create_labels(s)
+    # Disabled for now...
+    # if args.c:
+    #     callings.save_callings_snapshot(s)
+    # if args.d:
+    #     directory.create_directory(s)
+    # if args.i:
+    #     interviews.create_list_email(s)
+    # if args.l:
+    #     mailing_labels.create_labels(s)
     if args.ma:
-        missionary_accounts.create_report_emails(s)
+        missionary_accounts.create_report_emails(lcr)
     if args.qr:
-        quarterly_report.download_potential_reports(s)
+        quarterly_report.download_potential_reports(lcr)
     if args.r:
-        records.create_notification(s)
+        records.create_notification(lcr)
+
+
+def get_credentials():
+    username = os.environ.get('LDS_USERNAME')
+    password = os.environ.get('LDS_PASSWORD')
+    unit_number = os.environ.get('LDS_UNIT_NUMBER')
+    if username and password:
+        print('Using credentials from environment')
+    else:
+        print('Enter your LDS Account credentials')
+        username = input('Username: ')
+        password = getpass()
+        unit_number = input('Unit number: ')
+    return username, password, unit_number
 
 
 if __name__ == '__main__':

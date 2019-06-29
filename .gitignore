@@ -7,3 +7,4 @@ venv
 *.egg-info
 conf/*
 clerkbot/test_data/unit.json
+*.saz

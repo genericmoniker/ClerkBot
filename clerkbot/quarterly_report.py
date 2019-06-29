@@ -47,11 +47,10 @@ REPORTS = [
 ]
 
 
-def download_potential_reports(s=None):
-    assert s.logged_in, 'Expected logged in session.'
+def download_potential_reports(lcr):
     year, quarter = last_quarter(date.today())
     report_dir = get_report_dir(year, quarter)
-    fetch_reports(s, year, quarter, report_dir)
+    fetch_reports(lcr, year, quarter, report_dir)
 
 
 def last_quarter(today):
@@ -78,45 +77,21 @@ def get_report_dir(year, quarter):
     return path
 
 
-def fetch_reports(s, year, quarter, report_dir):
+def fetch_reports(lcr, year, quarter, report_dir):
     for report in REPORTS:
-        fetch_report(s, report, year, quarter, report_dir)
+        fetch_report(lcr, report, year, quarter, report_dir)
 
 
-def fetch_report(s, report, year, quarter, report_dir):
+def fetch_report(lcr, report, year, quarter, report_dir):
     name = '{} - {} - Potential.pdf'.format(report['line'], report['name'])
     print(name)
-    params = get_report_params(report['line'], s.unit_number, year, quarter)
-    r = s.get_report('quarterly-report-details-print', params, stream=True)
-    # print(r.url)
-    if r.ok:
-        filename = os.path.join(report_dir, name)
-        first_chunk = True
-        with open(filename, 'wb') as f:
-            for chunk in r:
-                if first_chunk:
-                    if not chunk.startswith(b'%PDF'):
-                        print('  ** File isn\'t a PDF! **')
-                    first_chunk = False
-                f.write(chunk)
-    else:
-        print(r)
-
-
-def get_report_params(line, unit_number, year, quarter):
-    # The potential reports aren't available until after the quarter ends, so
-    # we're asking for the most recently completed quarter.
-
-    # This stuff is subject to change. Try clicking the "Print" button on the
-    # report detail page to see what the current parameters should be.
-    return {
-        'pdf': 'true',
-        'lang': 'eng',
-        'rowNumber': line,
-        'unitNumber': unit_number,
-        'showAge': 'false',
-        'year': year,
-        'quarter': quarter,
-        'filter': 'POTENTIAL',
-        'sort': 'nameOrder',
-    }
+    r = lcr.quarterly_report_potential_streaming(report['line'], year, quarter)
+    filename = os.path.join(report_dir, name)
+    first_chunk = True
+    with open(filename, 'wb') as f:
+        for chunk in r:
+            if first_chunk:
+                if not chunk.startswith(b'%PDF'):
+                    print('  ** File isn\'t a PDF! **')
+                first_chunk = False
+            f.write(chunk)
