@@ -116,10 +116,10 @@ MOVED_OUT_DATA = [
 
 
 def _setup(moved_in, moved_out):
-    s = Mock()
-    s.get_members_moved_in.return_value = moved_in
-    s.get_members_moved_out.return_value = moved_out
-    return s, io.StringIO()
+    lcr = Mock()
+    lcr.members_moved_in.return_value = moved_in
+    lcr.members_moved_out.return_value = moved_out
+    return lcr, io.StringIO()
 
 
 def test_members_moved():
@@ -148,10 +148,10 @@ def test_members_moved():
 
 
 def test_only_includes_changes_since_last_checked():
-    s, buffer = _setup(MOVED_IN_DATA, MOVED_OUT_DATA)
+    lcr, buffer = _setup(MOVED_IN_DATA, MOVED_OUT_DATA)
     last_checked = date(2018, 4, 1)
     until = date(2018, 4, 16)
-    _generate_body(s, buffer, last_checked, until)
+    _generate_body(lcr, buffer, last_checked, until)
     body = buffer.getvalue()
     assert 'Day, Daisy' not in body  # moveDate: 20180318
     assert 'Noah, Rose' not in body  # moveDate: 20180318
@@ -160,10 +160,10 @@ def test_only_includes_changes_since_last_checked():
 
 
 def test_limited_by_until_param():
-    s, buffer = _setup([], MOVED_OUT_DATA)
+    lcr, buffer = _setup([], MOVED_OUT_DATA)
     last_checked = date(2018, 3, 17)
     until = date(2018, 4, 8)
-    _generate_body(s, buffer, last_checked, until)
+    _generate_body(lcr, buffer, last_checked, until)
     body = buffer.getvalue()
     assert 'Noah, Rose' in body
     assert 'Nancy, Spider' not in body
@@ -208,10 +208,10 @@ def test_daily_run_catches_moved_records():
             'deceased': False,
         },
     ]
-    s, buffer = _setup([], moved_out_data)
+    lcr, buffer = _setup([], moved_out_data)
     last_checked = date(2019, 2, 22)
     today = date(2019, 2, 23)
-    _generate_body(s, buffer, last_checked, today)
+    _generate_body(lcr, buffer, last_checked, today)
     body = buffer.getvalue()
     assert 'Move Feb 21' not in body
     assert 'Move Feb 22' in body
@@ -222,10 +222,10 @@ def test_prior_unit_unknown_is_formatted_appropriately():
     moved_in_data = MOVED_IN_DATA.copy()
     moved_in_data[0]['priorUnit'] = None
     moved_in_data[0]['priorUnitName'] = None
-    s, buffer = _setup(moved_in_data, [])
+    lcr, buffer = _setup(moved_in_data, [])
     last_checked = date(2018, 2, 21)
     until = date(2018, 4, 30)
-    _generate_body(s, buffer, last_checked, until)
+    _generate_body(lcr, buffer, last_checked, until)
     body = buffer.getvalue()
     assert 'None' not in body
     assert 'unknown unit' in body
