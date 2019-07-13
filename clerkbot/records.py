@@ -45,7 +45,11 @@ def _generate_body(lcr, buffer, since, until):
     if moved_out:
         print('These records have been moved out of the ward:', file=buffer)
         for mo in moved_out:
-            print('-', mo['name'], 'to the', mo['nextUnitName'], file=buffer)
+            next = mo['nextUnitName']
+            next = f'to the {next}' if next else 'to an unknown unit'
+            if mo['addressUnknown'] is True:
+                next += ' (address unknown)'
+            print('-', mo['name'], 'to the', next, file=buffer)
 
 
 def _get_members_moved(members, since, until):

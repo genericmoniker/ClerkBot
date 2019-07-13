@@ -229,3 +229,17 @@ def test_prior_unit_unknown_is_formatted_appropriately():
     body = buffer.getvalue()
     assert 'None' not in body
     assert 'unknown unit' in body
+
+
+def test_next_unit_unknown_is_formatted_appropriately():
+    moved_out_data = MOVED_OUT_DATA.copy()
+    moved_out_data[0]['nextUnitNumber'] = None
+    moved_out_data[0]['nextUnitName'] = None
+    moved_out_data[0]['addressUnknown'] = True
+    lcr, buffer = _setup([], moved_out_data)
+    last_checked = date(2018, 2, 21)
+    until = date(2018, 4, 30)
+    _generate_body(lcr, buffer, last_checked, until)
+    body = buffer.getvalue()
+    assert 'None' not in body
+    assert 'unknown unit' in body
