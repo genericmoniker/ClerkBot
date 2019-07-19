@@ -71,7 +71,7 @@ def main():
 
     username, password, unit_number = get_credentials()
     try:
-        lcr = API(username, password, unit_number)
+        lcr = API(username, password, unit_number, beta=True)
     except InvalidCredentialsError as e:
         print('Login failed :(', e)
         sys.exit(2)
