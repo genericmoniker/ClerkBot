@@ -56,15 +56,15 @@ def _get_members_moved(members, since, until):
     """Get members with move dates on or after `since`, and before `until`."""
     if since >= until:
         raise ValueError('Invalid since (%s) and until (%s)', since, until)
-    return [
-        m
-        for m in members
-        if until > _parse_date(m['moveDate']) >= since
-    ]
+    return [m for m in members if until > _get_move_date(m) >= since]
 
 
-def _parse_date(date_str):
-    return datetime.strptime(date_str, "%Y%m%d").date()
+def _get_move_date(member):
+    """Get the move date from a member moved in/out record."""
+    # We want a date of the form '2019-07-21'. For members moved in, that is
+    # currently 'moveDateCalc', and for members moved out, 'moveDate'.
+    date_str = member.get('moveDateCalc', member.get('moveDate'))
+    return datetime.strptime(date_str, "%Y-%m-%d").date()
 
 
 def _send_email(body):
