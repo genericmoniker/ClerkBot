@@ -89,7 +89,7 @@ python-dateutil==2.8.1
     #   faker
 pytz==2020.1
     # via google-api-core
-reportlab==3.5.42
+reportlab==3.5.55
     # via -r requirements.in
 requests==2.23.0
     # via
