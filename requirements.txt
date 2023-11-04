@@ -10,7 +10,7 @@ cachetools==4.1.0
     # via google-auth
 certifi==2023.7.22
     # via requests
-chardet==3.0.4
+charset-normalizer==3.3.2
     # via requests
 click==7.1.2
     # via pip-tools
@@ -91,7 +91,7 @@ pytz==2020.1
     # via google-api-core
 reportlab==3.5.55
     # via -r requirements.in
-requests==2.23.0
+requests==2.31.0
     # via
     #   -r requirements.in
     #   google-api-core
