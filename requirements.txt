@@ -54,7 +54,7 @@ packaging==24.1
     # via
     #   build
     #   pytest
-pillow==10.4.0
+pillow==12.2.0
     # via reportlab
 pip-tools==7.4.1
     # via -r requirements.in
